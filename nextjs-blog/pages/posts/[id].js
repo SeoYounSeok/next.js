@@ -4,6 +4,7 @@ import Head from "next/head";
 import Date from "../../components/date";
 import utilStyles from "../../styles/utils.module.css";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export async function getStaticProps({ params }) {
   const postData = await getPostData(params.id);
@@ -17,12 +18,29 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   const paths = getAllPostIds();
   return {
-    paths,
-    fallback: false, // 주지 않은 아이디에 대한 404처리를 위해, false
+    // paths,
+    paths: [{ params: { id: "ssg-ssr" } }],
+    fallback: true, // 주지 않은 아이디에 대한 404처리를 위해, false
+    // fallback: "blocking" 밑에 있는 로딩 화면을 안 보여준다.
   };
 }
 
+// export async function getServerSideProps({ params, req }) {
+//   console.log(`req.cookies: ${JSON.stringify(req.cookies)}`);
+//   const postData = await getPostData(params.id);
+//   return {
+//     props: {
+//       postData,
+//     },
+//   };
+// }
+
 export default function Post({ postData }) {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading.....</div>;
+  }
   useEffect(() => {
     const getText = async () => {
       const res = await fetch("/api/hello");
