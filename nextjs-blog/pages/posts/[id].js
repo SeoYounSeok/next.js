@@ -18,9 +18,9 @@ export async function getStaticProps({ params }) {
 export async function getStaticPaths() {
   const paths = getAllPostIds();
   return {
-    // paths,
-    paths: [{ params: { id: "ssg-ssr" } }],
-    fallback: true, // 주지 않은 아이디에 대한 404처리를 위해, false
+    paths,
+    // paths: [{ params: { id: "ssg-ssr" } }],
+    fallback: false, // 주지 않은 아이디에 대한 404처리를 위해, false
     // fallback: "blocking" 밑에 있는 로딩 화면을 안 보여준다.
   };
 }
@@ -38,9 +38,6 @@ export async function getStaticPaths() {
 export default function Post({ postData }) {
   const router = useRouter();
 
-  if (router.isFallback) {
-    return <div>Loading.....</div>;
-  }
   useEffect(() => {
     const getText = async () => {
       const res = await fetch("/api/hello");
@@ -50,6 +47,11 @@ export default function Post({ postData }) {
     };
     getText();
   }, []);
+
+  if (router.isFallback) {
+    return <div>Loading.....</div>;
+  }
+
   return (
     <Layout>
       <Head>

@@ -1,8 +1,20 @@
 import Link from "next/link";
 import Head from "next/head";
 import Layout from "../../components/layout";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function FirstPost() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Always do navigations after the first render
+    // router.push("/?counter=10", undefined, { shallow: true });
+  }, []);
+
+  useEffect(() => {
+    alert(JSON.stringify(router.query.counter));
+  }, [router.query]);
   return (
     <Layout>
       <Head>
